@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { getInviteMode } from "./data/weddingData";
 import HeroSection from "./components/HeroSection.jsx";
 import ScratchReveal from "./components/ScratchReveal.jsx";
 import FamiliesSection from "./components/FamiliesSection.jsx";
@@ -6,15 +8,22 @@ import EventsSection from "./components/EventsSection.jsx";
 import RsvpSection from "./components/RsvpSection.jsx";
 
 export default function Page() {
+  const [inviteMode, setInviteMode] = useState(() => getInviteMode());
+
+  useEffect(() => {
+    const syncMode = () => setInviteMode(getInviteMode());
+    window.addEventListener("hashchange", syncMode);
+    window.addEventListener("popstate", syncMode);
+    return () => {
+      window.removeEventListener("hashchange", syncMode);
+      window.removeEventListener("popstate", syncMode);
+    };
+  }, []);
+
   return (
     <>
       <div id="opening">
-        <video
-          id="opening-video"
-          playsInline
-          preload="auto"
-          muted
-        >
+        <video id="opening-video" playsInline preload="auto" muted>
           <source src="opening-ashish.mp4" type="video/mp4" />
         </video>
         <div id="tap-hint">
@@ -61,8 +70,8 @@ export default function Page() {
         <ScratchReveal />
         <FamiliesSection />
         <SpecialNoteSection />
-        <EventsSection />
-        <RsvpSection />
+        <EventsSection key={`events-${inviteMode}`} inviteMode={inviteMode} />
+        <RsvpSection key={`rsvp-${inviteMode}`} inviteMode={inviteMode} />
       </main>
 
       <footer id="footer" className="banner-section">

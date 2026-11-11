@@ -1,22 +1,20 @@
 import { useState } from "react";
-import { WEDDING_DATA } from "../data/weddingData";
-import { GoldDivider } from "./FloralFlourish";
+import { getEventsForMode, WEDDING_DATA } from "../data/weddingData";
+import { FloralSprig, GoldDivider } from "./FloralFlourish";
 
-const INITIAL_EVENTS = {
-  mehandi: true,
-  haldi: true,
-  wedding: true,
-};
+export default function RsvpSection({ inviteMode = "all" }) {
+  const visibleEvents = getEventsForMode(inviteMode);
 
-export default function RsvpSection() {
   const [name, setName] = useState("");
   const [guests, setGuests] = useState("2");
   const [attending, setAttending] = useState("yes");
-  const [selectedEvents, setSelectedEvents] = useState(INITIAL_EVENTS);
+  const [selectedEvents, setSelectedEvents] = useState(() =>
+    Object.fromEntries(visibleEvents.map((ev) => [ev.id, true]))
+  );
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(() => {
     try {
-      const saved = localStorage.getItem("isha_ashish_rsvp");
+      const saved = localStorage.getItem(`isha_ashish_rsvp_${inviteMode}`);
       return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
@@ -31,15 +29,15 @@ export default function RsvpSection() {
     const primary = WEDDING_DATA.contacts[0].whatsapp;
     const eventsList =
       entry.attending === "yes"
-        ? WEDDING_DATA.events
-            .filter((ev) => entry.events[ev.id])
+        ? visibleEvents
+            .filter((ev) => entry.events?.[ev.id] ?? true)
             .map((ev) => ev.name)
-            .join(", ") || "All Events"
+            .join(", ") || visibleEvents.map((ev) => ev.name).join(", ")
         : "Unable to attend";
 
     const text = [
       `Namaste Wadhwa & Sachdeva Family!`,
-      `RSVP for Isha & Ashish's Wedding:`,
+      `RSVP for Isha & Ashish's Wedding (${WEDDING_DATA.hashtag}):`,
       `Name: ${entry.name}`,
       `Status: ${entry.attending === "yes" ? "Joyfully Attending" : "Regretfully Unable to Attend"}`,
       entry.attending === "yes" ? `Guests: ${entry.guests}` : null,
@@ -67,7 +65,7 @@ export default function RsvpSection() {
     };
 
     try {
-      localStorage.setItem("isha_ashish_rsvp", JSON.stringify(payload));
+      localStorage.setItem(`isha_ashish_rsvp_${inviteMode}`, JSON.stringify(payload));
     } catch {
       // ignore storage errors
     }
@@ -77,7 +75,7 @@ export default function RsvpSection() {
   const handleResetRsvp = () => {
     setSubmitted(null);
     try {
-      localStorage.removeItem("isha_ashish_rsvp");
+      localStorage.removeItem(`isha_ashish_rsvp_${inviteMode}`);
     } catch {
       // ignore
     }
@@ -87,7 +85,8 @@ export default function RsvpSection() {
     <section className="section paper-texture" id="rsvp">
       <div className="container">
         <div className="section-head" data-fade="">
-          <div className="eyebrow">Kindly Respond</div>
+          <FloralSprig className="floral-sprig-sm" />
+          <div className="eyebrow">Kindly Respond • {WEDDING_DATA.hashtag}</div>
           <h2 className="section-title">RSVP</h2>
           <GoldDivider />
           <p className="rsvp-subtitle">
@@ -181,23 +180,25 @@ export default function RsvpSection() {
                     </select>
                   </div>
 
-                  <div className="form-row">
-                    <label>Events Attending</label>
-                    <div className="rsvp-events-checks">
-                      {WEDDING_DATA.events.map((ev) => (
-                        <label key={ev.id} className="rsvp-check-pill">
-                          <input
-                            type="checkbox"
-                            checked={!!selectedEvents[ev.id]}
-                            onChange={() => toggleEvent(ev.id)}
-                          />
-                          <span>
-                            {ev.name} ({ev.date.replace(" December 2026", " Dec")} • {ev.time})
-                          </span>
-                        </label>
-                      ))}
+                  {visibleEvents.length > 1 && (
+                    <div className="form-row">
+                      <label>Events Attending</label>
+                      <div className="rsvp-events-checks">
+                        {visibleEvents.map((ev) => (
+                          <label key={ev.id} className="rsvp-check-pill">
+                            <input
+                              type="checkbox"
+                              checked={!!selectedEvents[ev.id]}
+                              onChange={() => toggleEvent(ev.id)}
+                            />
+                            <span>
+                              {ev.name} ({ev.date.replace(" December 2026", " Dec")} • {ev.time})
+                            </span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </>
               )}
 
@@ -248,4 +249,3 @@ export default function RsvpSection() {
     </section>
   );
 }
-

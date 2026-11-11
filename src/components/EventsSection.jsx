@@ -1,5 +1,5 @@
-import { WEDDING_DATA } from "../data/weddingData";
-import { GoldDivider } from "./FloralFlourish";
+import { getEventsForMode, WEDDING_DATA } from "../data/weddingData";
+import { FloralSprig, GoldDivider } from "./FloralFlourish";
 
 function EventIcon({ id }) {
   if (id === "mehandi") {
@@ -41,18 +41,26 @@ function EventIcon({ id }) {
   );
 }
 
-export default function EventsSection() {
+export default function EventsSection({ inviteMode = "all" }) {
+  const events = getEventsForMode(inviteMode);
+  const isSingleWedding = inviteMode === "wedding";
+
   return (
     <section className="section section-tinted" id="events">
       <div className="container">
         <div className="section-head" data-fade="">
-          <div className="eyebrow">Join Us For</div>
-          <h2 className="section-title">Wedding Celebrations</h2>
+          <FloralSprig />
+          <div className="eyebrow">
+            {isSingleWedding ? "Shubh Vivah" : "Join Us For"} • {WEDDING_DATA.hashtag}
+          </div>
+          <h2 className="section-title">
+            {isSingleWedding ? "Wedding Ceremony" : "Wedding Celebrations"}
+          </h2>
           <GoldDivider />
         </div>
 
-        <div className="events-grid">
-          {WEDDING_DATA.events.map((ev) => (
+        <div className={`events-grid ${isSingleWedding ? "events-grid-single" : ""}`}>
+          {events.map((ev) => (
             <article
               key={ev.id}
               className={`detail-card event-card ${ev.id === "wedding" ? "event-featured" : ""}`}
@@ -91,4 +99,3 @@ export default function EventsSection() {
     </section>
   );
 }
-

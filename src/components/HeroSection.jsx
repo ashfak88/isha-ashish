@@ -47,6 +47,10 @@ export default function HeroSection() {
             </h1>
 
             <GoldDivider />
+
+            <div className="hero-hashtag" data-fade="">
+              {WEDDING_DATA.hashtag}
+            </div>
           </div>
         </div>
       </div>

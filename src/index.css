@@ -1667,3 +1667,51 @@ footer#footer img { display: block; }
   z-index: 1;
   overflow: hidden;
 }
+
+
+/* ---------- Watercolor Floral Accents & Hashtag ---------- */
+.floral-sprig-wrap{
+  width: clamp(180px, 44vw, 280px);
+  margin: 0 auto 10px;
+  pointer-events: none;
+}
+.floral-sprig-wrap.floral-sprig-sm{
+  width: clamp(145px, 34vw, 220px);
+  margin-bottom: 8px;
+}
+.floral-sprig-img{
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+}
+
+.hero-hashtag{
+  margin-top: 12px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(1.25rem, 3.4vw, 1.65rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--rose);
+}
+
+.section-hashtag{
+  margin-top: 8px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--rose);
+}
+
+.hashtag-inline{
+  color: #84632f;
+  font-weight: 600;
+}
+
+.events-grid-single{
+  max-width: 440px;
+  grid-template-columns: 1fr !important;
+}

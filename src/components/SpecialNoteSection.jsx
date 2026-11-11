@@ -1,8 +1,8 @@
 import { WEDDING_DATA } from "../data/weddingData";
-import { CornerBotanical, GoldDivider } from "./FloralFlourish";
+import { CornerBotanical, FloralSprig, GoldDivider } from "./FloralFlourish";
 
 export default function SpecialNoteSection() {
-  const { specialNote } = WEDDING_DATA;
+  const { specialNote, hashtag } = WEDDING_DATA;
 
   return (
     <section className="section paper-texture" id="special-note">
@@ -11,6 +11,7 @@ export default function SpecialNoteSection() {
           <CornerBotanical className="cb-tl small" />
           <CornerBotanical className="cb-br small" />
 
+          <FloralSprig className="floral-sprig-sm" />
           <div className="eyebrow">A Special Invitation</div>
           <GoldDivider />
 
@@ -21,10 +22,10 @@ export default function SpecialNoteSection() {
           <div className="special-note-signoff">
             <span>{specialNote.signOff}</span>
             <strong>{specialNote.authors}</strong>
+            <div className="section-hashtag">{hashtag}</div>
           </div>
         </div>
       </div>
     </section>
   );
 }
-

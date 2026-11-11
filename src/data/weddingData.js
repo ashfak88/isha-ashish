@@ -1,5 +1,6 @@
 export const WEDDING_DATA = {
   side: "Bride’s Side",
+  hashtag: "#Ashisha",
   couple: {
     brideName: "Isha Wadhwa",
     brideFirst: "Isha",
@@ -80,3 +81,36 @@ export const WEDDING_DATA = {
   },
 };
 
+const WEDDING_ONLY_VALUES = new Set([
+  "wedding",
+  "only-wedding",
+  "wedding-only",
+  "neighbour",
+  "neighbours",
+  "neighbor",
+  "neighbors",
+]);
+
+export function getInviteMode() {
+  if (typeof window === "undefined") return "all";
+  const params = new URLSearchParams(window.location.search);
+  for (const key of ["invite", "type", "mode", "for", "events"]) {
+    const val = (params.get(key) || "").trim().toLowerCase();
+    if (WEDDING_ONLY_VALUES.has(val)) return "wedding";
+    if (val === "all" || val === "family" || val === "relatives") return "all";
+  }
+  const hash = (window.location.hash || "").replace(/^#/, "").trim().toLowerCase();
+  if (WEDDING_ONLY_VALUES.has(hash)) return "wedding";
+
+  const path = (window.location.pathname || "").toLowerCase();
+  if (/\/(wedding|neighbours?|neighbors?)\/?$/.test(path)) return "wedding";
+
+  return "all";
+}
+
+export function getEventsForMode(mode) {
+  if (mode === "wedding") {
+    return WEDDING_DATA.events.filter((ev) => ev.id === "wedding");
+  }
+  return WEDDING_DATA.events;
+}

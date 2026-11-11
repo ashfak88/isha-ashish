@@ -1,16 +1,18 @@
 import { WEDDING_DATA } from "../data/weddingData";
-import { GoldDivider } from "./FloralFlourish";
+import { FloralSprig, GoldDivider } from "./FloralFlourish";
 
 export default function FamiliesSection() {
-  const { families, couple, side } = WEDDING_DATA;
+  const { families, couple, side, hashtag } = WEDDING_DATA;
 
   return (
     <section className="section section-tinted" id="families">
       <div className="container">
         <div className="section-head" data-fade="">
+          <FloralSprig />
           <div className="eyebrow">Shubh Vivah • {side}</div>
           <h2 className="section-title">With Blessings &amp; Families</h2>
           <GoldDivider />
+          <div className="section-hashtag">{hashtag}</div>
         </div>
 
         <div className="family-blessings-card" data-fade="">

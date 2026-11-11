@@ -1,3 +1,16 @@
+export function FloralSprig({ className = "" }) {
+  return (
+    <div className={`floral-sprig-wrap ${className}`} aria-hidden="true">
+      <img
+        src="assets/floral-cluster.jpg"
+        alt=""
+        className="floral-sprig-img"
+        loading="lazy"
+      />
+    </div>
+  );
+}
+
 export function GoldDivider() {
   return (
     <div className="ornament-divider" aria-hidden="true">
@@ -68,4 +81,3 @@ export function CornerBotanical({ className = "" }) {
     </svg>
   );
 }
-

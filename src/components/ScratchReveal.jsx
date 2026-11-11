@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { WEDDING_DATA } from "../data/weddingData";
-import { GoldDivider } from "./FloralFlourish";
+import { FloralSprig, GoldDivider } from "./FloralFlourish";
 
 function getRemaining(targetMs) {
   const diff = Math.max(0, targetMs - Date.now());
@@ -174,6 +174,7 @@ export default function ScratchReveal() {
     <section className="section paper-texture" id="scratch-reveal">
       <div className="container">
         <div className="section-head" data-fade="">
+          <FloralSprig className="floral-sprig-sm" />
           <div className="eyebrow">A Little Surprise</div>
           <h2 className="section-title">Reveal Our Wedding Date</h2>
           <GoldDivider />
@@ -193,7 +194,8 @@ export default function ScratchReveal() {
                 The Eastern Address, Shahdara, Delhi
               </div>
               <div className="scratch-couple">
-                {WEDDING_DATA.couple.brideFirst} &amp; {WEDDING_DATA.couple.groomFirst}
+                {WEDDING_DATA.couple.brideFirst} &amp; {WEDDING_DATA.couple.groomFirst} •{" "}
+                <span className="hashtag-inline">{WEDDING_DATA.hashtag}</span>
               </div>
             </div>
 
