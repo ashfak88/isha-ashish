@@ -1,20 +1,420 @@
-// Original page scripts, run in order once the markup is mounted.
-export const bodyClass = ""
-export const bodyStyle = ""
+// Page opening curtain, YouTube song playback from 0:00, mute toggle, and scroll animations.
+export const bodyClass = "";
+export const bodyStyle = "";
 export const scripts = [
   {
-    "src": "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    src: "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js",
   },
   {
-    "src": "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+    src: "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js",
   },
   {
-    "src": "https://cdnjs.cloudflare.com/ajax/libs/lenis/1.1.13/lenis.min.js"
+    src: "https://cdnjs.cloudflare.com/ajax/libs/lenis/1.1.13/lenis.min.js",
   },
   {
-    "code": "\n/* ============================================================\n   CONFIGURATION\n   Edit this single object to re-theme the entire invitation.\n   ============================================================ */\nwindow.WEDDING_CONFIG = {\n  couple: {\n    brideName: \"Thooba\",\n    groomName: \"Anfal\",\n    monogram: \"T&A\",\n    tagline: \"Reserve This Day\"\n  },\n  event: {\n    dateISO: \"2026-08-09T11:00:00+05:30\",\n    dateDisplay: \"Sunday, 9 August 2026\",\n    dayName: \"Sunday\",\n    dateShort: \"9 August 2026\",\n    time: \"11:00 AM onwards\",\n    venueName: \"Meruzila Convention Centre\",\n    venueAddress: \"Elettil Vattoli\",\n    googleMapsUrl: \"https://www.google.com/maps/search/?api=1&query=Meruzila+Convention+Centre+Elettil+Vattoli\"\n  },\n  media: {\n    backgroundMusicUrl: \"assets/wedding-song.mp3\",\n    heroImage: \"\",\n    brideImage: \"\",\n    groomImage: \"\",\n    gallery: [\n      // { url: \"https://...\", caption: \"\" }\n    ]\n  },\n  loveStory: [\n    { title: \"First Meeting\", date: \"\", description: \"Add your story here, or remove this milestone from the config.\", image: \"\" },\n    { title: \"Friendship\", date: \"\", description: \"Add your story here, or remove this milestone from the config.\", image: \"\" },\n    { title: \"Engagement\", date: \"\", description: \"Add your story here, or remove this milestone from the config.\", image: \"\" },\n    { title: \"Wedding Day\", date: \"9 August 2026\", description: \"The day our two families become one.\", image: \"\" }\n  ],\n  rsvp: {\n    whatsappNumber: \"919999999999\" // digits only, country code first\n  },\n  colors: {\n    ivory: \"#FCFAF6\",\n    gold: \"#D4AF37\",\n    beige: \"#F6F2EB\",\n    rose: \"#B76E79\",\n    charcoal: \"#2B2B2B\"\n  }\n};\n"
+    code: `
+window.WEDDING_CONFIG = {
+  couple: {
+    brideName: "Isha Wadhwa",
+    groomName: "Ashish Goel",
+    monogram: "I & A",
+    tagline: "Wedding Invitation"
   },
-  {
-    "code": "\n(function(){\n  \"use strict\";\n  const CFG = window.WEDDING_CONFIG;\n\n  /* ---------------- populate config-driven text ---------------- */\n  const setText = (id, val) => { const el = document.getElementById(id); if(el && val) el.textContent = val; };\n  setText('openBride', CFG.couple.brideName);\n  setText('openGroom', CFG.couple.groomName);\n  setText('monogramText', CFG.couple.monogram);\n  setText('openTagline', CFG.couple.tagline);\n  setText('openDate', CFG.event.dateShort);\n  setText('heroBride', CFG.couple.brideName);\n  setText('heroGroom', CFG.couple.groomName);\n  setText('heroDate', CFG.event.dateDisplay);\n  setText('heroVenue', CFG.event.venueName + ', ' + CFG.event.venueAddress);\n  setText('brideName', CFG.couple.brideName);\n  setText('groomName', CFG.couple.groomName);\n  setText('detailDate', CFG.event.dayName);\n  setText('detailDateSub', CFG.event.dateShort);\n  setText('detailTime', CFG.event.time.split(' ')[0] + ' ' + (CFG.event.time.split(' ')[1]||''));\n  setText('detailVenue', CFG.event.venueName);\n  setText('detailVenueSub', CFG.event.venueAddress);\n  document.getElementById('mapLink').href = CFG.event.googleMapsUrl;\n  const mapLink2 = document.getElementById('mapLink2');\n  if(mapLink2) mapLink2.href = CFG.event.googleMapsUrl;\n  document.title = CFG.couple.brideName + \" & \" + CFG.couple.groomName + \" — \" + CFG.couple.tagline;\n\n  /* ---------------- countdown (hero + card) ---------------- */\n  const target = new Date(CFG.event.dateISO).getTime();\n  function pad(n){ return String(n).padStart(2,'0'); }\n  function tickCountdown(){\n    const now = Date.now();\n    const diff = Math.max(0, target - now);\n    const d = Math.floor(diff / 86400000);\n    const h = Math.floor((diff % 86400000) / 3600000);\n    const m = Math.floor((diff % 3600000) / 60000);\n    const s = Math.floor((diff % 60000) / 1000);\n    ['hc-days'].forEach(id => document.getElementById(id).textContent = d);\n    ['hc-hours'].forEach(id => document.getElementById(id).textContent = pad(h));\n    ['hc-mins'].forEach(id => document.getElementById(id).textContent = pad(m));\n    ['hc-secs'].forEach(id => document.getElementById(id).textContent = pad(s));\n  }\n  tickCountdown();\n  setInterval(tickCountdown, 1000);\n\n  /* ---------------- floating petals ---------------- */\n  const petalLayer = document.getElementById('petal-layer');\n  function makePetal(){\n    const p = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\n    p.setAttribute('viewBox','0 0 20 20');\n    p.setAttribute('class','petal');\n    p.innerHTML = `<path d=\"M10 1C13 5 19 7 19 12C19 16 15 19 10 19C5 19 1 16 1 12C1 7 7 5 10 1Z\" fill=\"${Math.random() > 0.5 ? '#D4AF37' : '#B76E79'}\" opacity=\"0.5\"/>`;\n    const size = 8 + Math.random()*14;\n    p.style.width = size+'px';\n    p.style.height = size+'px';\n    p.style.left = Math.random()*100+'%';\n    petalLayer.appendChild(p);\n    const duration = 12 + Math.random()*10;\n    const drift = (Math.random()-0.5)*160;\n    if(window.gsap){\n      gsap.fromTo(p, { y: -40, rotate: 0, opacity:.6 }, {\n        y: window.innerHeight + 60,\n        x: `+=${drift}`,\n        rotate: 360*(Math.random() > 0.5 ? 1 : -1),\n        opacity: 0,\n        duration: duration,\n        ease: 'none',\n        onComplete: () => p.remove()\n      });\n    } else { p.remove(); }\n  }\n  let petalInterval = null;\n\n  /* ---------------- music control ---------------- */\n  const audio = document.getElementById('bgMusic');\n  const musicBtn = document.getElementById('music-control');\n  const disc = document.getElementById('discIcon');\n  let isPlaying = false;\n\n  // Keep audio src in sync with config if overridden, else use the\n  // hardcoded src already on the element. Only set if different to avoid\n  // resetting the element's network state and losing buffered data.\n  if(CFG.media.backgroundMusicUrl && audio.src !== new URL(CFG.media.backgroundMusicUrl, location.href).href){\n    audio.src = CFG.media.backgroundMusicUrl;\n  }\n  audio.volume = 0.45;\n\n  let retryAttached = false;\n\n  function startMusic(){\n    const p = audio.play();\n    if(!p || !p.then){\n      // very old browsers: play() returns undefined, assume it worked\n      isPlaying = true;\n      disc.classList.add('spinning');\n      musicBtn.classList.remove('needs-tap');\n      return;\n    }\n    p.then(() => {\n      isPlaying = true;\n      disc.classList.add('spinning');\n      musicBtn.classList.remove('needs-tap');\n    }).catch(() => {\n      // Autoplay was blocked (common on some Android WebViews / in-app\n      // browsers, or if the mp3 hadn't buffered yet on the first tap).\n      // Don't give up silently — pulse the button so guests know to tap\n      // it, and keep retrying on the next interactions until it sticks.\n      isPlaying = false;\n      disc.classList.remove('spinning');\n      musicBtn.classList.add('needs-tap');\n      attachAutoRetry();\n    });\n  }\n\n  // Re-attempt playback on subsequent taps/scrolls. Sticky user-activation\n  // means play() is still allowed here even though it's not the very first\n  // gesture, so this quietly recovers from a failed first attempt instead\n  // of leaving the invitation silent.\n  function attachAutoRetry(){\n    if(retryAttached) return;\n    retryAttached = true;\n    const tryAgain = () => {\n      if(isPlaying){\n        document.removeEventListener('click', tryAgain);\n        document.removeEventListener('touchend', tryAgain);\n        document.removeEventListener('scroll', tryAgain);\n        retryAttached = false;\n        return;\n      }\n      audio.play().then(() => {\n        isPlaying = true;\n        disc.classList.add('spinning');\n        musicBtn.classList.remove('needs-tap');\n        document.removeEventListener('click', tryAgain);\n        document.removeEventListener('touchend', tryAgain);\n        document.removeEventListener('scroll', tryAgain);\n        retryAttached = false;\n      }).catch(() => { /* still blocked, keep listening */ });\n    };\n    document.addEventListener('click', tryAgain);\n    document.addEventListener('touchend', tryAgain, { passive: true });\n    document.addEventListener('scroll', tryAgain, { passive: true });\n  }\n\n  musicBtn.addEventListener('click', () => {\n    if(isPlaying){\n      audio.pause();\n      isPlaying = false;\n      disc.classList.remove('spinning');\n      if(musicBtn._gainNode) musicBtn._gainNode.gain.setValueAtTime(0, musicBtn._audioCtx.currentTime);\n    } else {\n      if(musicBtn._gainNode){\n        audio.play().catch(()=>{});\n        musicBtn._gainNode.gain.setValueAtTime(0, musicBtn._audioCtx.currentTime);\n        musicBtn._gainNode.gain.linearRampToValueAtTime(0.45, musicBtn._audioCtx.currentTime + 0.5);\n        isPlaying = true;\n        disc.classList.add('spinning');\n      } else {\n        startMusic();\n      }\n    }\n  });\n\n  /* ---------------- opening → main reveal ---------------- */\n  const opening = document.getElementById('opening');\n  const openingVideo = document.getElementById('opening-video');\n  const tapHint = document.getElementById('tap-hint');\n\n  let opened = false;\n\n  function onTouchEnd(e){\n    e.preventDefault(); // prevent the ghost click that follows touchend\n    openInvitation();\n  }\n\n  function openInvitation(){\n    if(opened) return;\n    opened = true;\n\n    // Hide the tap hint immediately\n    tapHint.classList.add('hidden');\n\n    // Remove all listeners immediately so subsequent taps on the real\n    // page (RSVP buttons, links, etc.) behave normally\n    document.removeEventListener('click', openInvitation);\n    document.removeEventListener('touchend', onTouchEnd);\n\n    // ── Cling chime + start wedding song via one AudioContext ────────\n    // Everything routed through a single AudioContext unlocked by this\n    // gesture — browser allows all sources to play simultaneously.\n    try {\n      const ctx = new (window.AudioContext || window.webkitAudioContext)();\n\n      // 1. Cling chime — three detuned sine tones for a bell strike\n      [[880, 0], [1108, 0.04], [1318, 0.09]].forEach(([freq, delay]) => {\n        const osc  = ctx.createOscillator();\n        const gain = ctx.createGain();\n        osc.connect(gain);\n        gain.connect(ctx.destination);\n        osc.type = 'sine';\n        osc.frequency.value = freq;\n        gain.gain.setValueAtTime(0, ctx.currentTime + delay);\n        gain.gain.linearRampToValueAtTime(0.38, ctx.currentTime + delay + 0.01);\n        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + 2.2);\n        osc.start(ctx.currentTime + delay);\n        osc.stop(ctx.currentTime + delay + 2.2);\n      });\n\n      // 2. Wedding song — connect the <audio> element into the same context\n      //    so it plays concurrently with no autoplay block\n      const musicSource = ctx.createMediaElementSource(audio);\n      const musicGain   = ctx.createGain();\n      musicSource.connect(musicGain);\n      musicGain.connect(ctx.destination);\n      musicGain.gain.setValueAtTime(0, ctx.currentTime);\n      musicGain.gain.linearRampToValueAtTime(0.45, ctx.currentTime + 1.5);\n      audio.volume = 1; // gain node controls volume now\n      audio.play().then(() => {\n        isPlaying = true;\n        disc.classList.add('spinning');\n        musicBtn.classList.remove('needs-tap');\n        // override the music button to control the gain node instead\n        musicBtn._gainNode = musicGain;\n        musicBtn._audioCtx = ctx;\n      }).catch(() => {\n        musicBtn.classList.add('needs-tap');\n        attachAutoRetry();\n      });\n\n    } catch(e) {\n      // Web Audio API not supported — fall back to plain startMusic()\n      startMusic();\n    }\n\n    // Play the video unmuted as the opening sound alongside the wedding song.\n    openingVideo.muted = false;\n\n    // Safety net: if playback hasn't actually started within a few\n    // seconds, don't leave guests stuck on a frozen tap screen —\n    // just reveal the invitation without the intro video.\n    let started = false;\n    const fallbackTimer = setTimeout(() => {\n      if(!started) completeOpening();\n    }, 4000);\n\n    openingVideo.addEventListener('playing', function onPlaying(){\n      started = true;\n      clearTimeout(fallbackTimer);\n      openingVideo.removeEventListener('playing', onPlaying);\n    });\n\n    openingVideo.play().catch((err) => {\n      console.warn('Video play failed (first attempt):', err);\n      // On Chrome Android a cached decoder can stall — reset and retry once\n      openingVideo.load();\n      openingVideo.play().catch((err2) => {\n        console.warn('Video play failed (retry):', err2);\n        clearTimeout(fallbackTimer);\n        completeOpening();\n      });\n    });\n\n    // Reveal the music toggle immediately so guests can mute/unmute\n    // wedding-song.mp3 while the opening video is still playing.\n    document.getElementById('music-control').classList.add('visible');\n  }\n\n  // Tapping/clicking anywhere on the page opens the invitation and\n  // starts video + music. We use 'touchend' (not 'touchstart') because\n  // Android Chrome doesn't reliably treat touchstart as a completed\n  // gesture for audio autoplay — it can still turn into a scroll.\n  // touchend/click are the gestures both iOS Safari and Android Chrome\n  // reliably honor for unlocking audio.\n  document.addEventListener('click', openInvitation);\n  document.addEventListener('touchend', onTouchEnd, { passive: false });\n\n  // When video ends, fade out and reveal main site\n  openingVideo.addEventListener('ended', completeOpening);\n\n  function completeOpening(){\n    // Fade out the video's own audio as the screen transitions away\n    if(openingVideo && !openingVideo.paused){\n      const ramp = setInterval(() => {\n        if(openingVideo.volume > 0.05){\n          openingVideo.volume = Math.max(0, openingVideo.volume - 0.08);\n        } else {\n          openingVideo.volume = 0;\n          openingVideo.muted = true;\n          clearInterval(ramp);\n        }\n      }, 40);\n    }\n\n    // Wedding song is already playing from openInvitation — nothing to start.\n    // If music hasn't started yet (Web Audio fallback path), start it now.\n    if(!isPlaying){ startMusic(); }\n\n    if(window.gsap){\n      gsap.to(opening, {\n        opacity: 0,\n        duration: 0.9,\n        ease: 'power2.inOut',\n        onComplete: () => {\n          opening.style.display = 'none';\n          initSiteAnimations();\n          document.getElementById('music-control').classList.add('visible');\n          petalInterval = setInterval(makePetal, 900);\n          for(let i = 0; i < 4; i++) setTimeout(makePetal, i * 250);\n        }\n      });\n    } else {\n      opening.style.display = 'none';\n      initSiteAnimations();\n    }\n  }\n\n  /* ---------------- scroll animations (post-open) ---------------- */\n  let siteInited = false;\n  function initSiteAnimations(){\n    if(siteInited) return;\n    siteInited = true;\n\n    // Lenis smooth scroll\n    if(window.Lenis){\n      const lenis = new Lenis({ duration: 1.15, smoothWheel: true });\n      function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }\n      requestAnimationFrame(raf);\n      if(window.gsap && window.ScrollTrigger){\n        lenis.on('scroll', ScrollTrigger.update);\n        gsap.ticker.add((time) => { lenis.raf(time * 1000); });\n        gsap.ticker.lagSmoothing(0);\n      }\n    }\n\n    if(!window.gsap || !window.ScrollTrigger) return;\n    gsap.registerPlugin(ScrollTrigger);\n\n    // hero fade-up sequence\n    gsap.timeline({ delay: .1 })\n      .to('#hero [data-fade]', { opacity:1, y:0, duration:1.1, stagger:.15, ease:'power3.out' });\n    gsap.set('#hero [data-fade]', { y: 30 });\n\n    // generic reveal for elements with data-fade elsewhere\n    document.querySelectorAll('.section [data-fade], .detail-card, .rsvp-wrap').forEach(el => {\n      gsap.fromTo(el, { opacity:0, y:40 }, {\n        opacity:1, y:0, duration:1, ease:'power3.out',\n        scrollTrigger: { trigger: el, start: 'top 85%' }\n      });\n    });\n\n    gsap.utils.toArray('.banner-overlay-card').forEach((el) => {\n      gsap.fromTo(el, { opacity:0, y:20 }, {\n        opacity:1, y:0, duration:1, ease:'power3.out',\n        scrollTrigger: { trigger: el, start:'top 90%' }\n      });\n    });\n  }\n\n})();\n"
+  event: {
+    dateISO: "2026-12-11T20:00:00+05:30",
+    dateDisplay: "Friday, 11 December 2026",
+    time: "8:00 PM",
+    venueName: "The Eastern Address",
+    venueAddress: "Devasya City Centre, Plot 11, near Karkardooma Court, Vishwas Nagar Extension, Vishwas Nagar, Shahdara, Delhi, 110032"
+  },
+  youtubeVideoId: "NZGHXy1IAHM",
+  rsvp: {
+    whatsappNumber: "919811593066"
   }
-]
+};
+`,
+  },
+  {
+    code: `
+(function(){
+  "use strict";
+  const CFG = window.WEDDING_CONFIG;
+
+  /* ---------------- YouTube IFrame Player API ---------------- */
+  let ytPlayer = null;
+  let ytReady = false;
+  let prebuffering = false;
+  let prebufferedAtZero = false;
+  let pendingPlay = false;
+  let isPlaying = false;
+  let userMuted = false;
+  let retryAttached = false;
+  let opened = false;
+
+  const musicBtn = document.getElementById('music-control');
+  const disc = document.getElementById('discIcon');
+
+  // Show the mute/music button right over the corner icon
+  if(musicBtn){
+    musicBtn.classList.add('visible');
+  }
+
+  function updateDisc(playing){
+    isPlaying = !!playing;
+    if(disc){
+      disc.classList.toggle('spinning', isPlaying && !userMuted);
+    }
+    if(musicBtn){
+      musicBtn.classList.toggle('is-muted', userMuted || !isPlaying);
+      if(isPlaying && !userMuted){
+        musicBtn.classList.remove('needs-tap');
+      }
+    }
+  }
+
+  function registerMediaSession(){
+    if(!('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: 'A Thousand Years',
+        artist: 'Isha & Ashish Wedding',
+        album: 'Shubh Vivah'
+      });
+      navigator.mediaSession.setActionHandler('play', () => {
+        userMuted = false;
+        resumeYouTube();
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        userMuted = true;
+        if(ytPlayer && ytReady){
+          ytPlayer.pauseVideo();
+        }
+        updateDisc(false);
+      });
+    } catch(e) {}
+  }
+
+  function playYouTubeFromStart(){
+    prebuffering = false;
+    userMuted = false;
+    if(ytPlayer && ytReady){
+      try {
+        ytPlayer.unMute();
+        ytPlayer.setVolume(70);
+        if(!prebufferedAtZero){
+          ytPlayer.seekTo(0, true);
+        }
+        prebufferedAtZero = false;
+        ytPlayer.playVideo();
+        pendingPlay = false;
+        registerMediaSession();
+      } catch(e) {
+        attachAutoRetry();
+      }
+    } else {
+      pendingPlay = true;
+    }
+  }
+
+  function resumeYouTube(){
+    if(!opened || userMuted || !ytPlayer || !ytReady) return;
+    try {
+      ytPlayer.unMute();
+      ytPlayer.setVolume(70);
+      ytPlayer.playVideo();
+    } catch(e) {}
+  }
+
+  function attachAutoRetry(){
+    if(retryAttached) return;
+    retryAttached = true;
+    const tryAgain = () => {
+      if(isPlaying || userMuted){
+        document.removeEventListener('click', tryAgain);
+        document.removeEventListener('touchend', tryAgain);
+        retryAttached = false;
+        return;
+      }
+      if(ytPlayer && ytReady){
+        try {
+          ytPlayer.unMute();
+          ytPlayer.setVolume(70);
+          ytPlayer.playVideo();
+        } catch(e) {}
+      }
+    };
+    document.addEventListener('click', tryAgain);
+    document.addEventListener('touchend', tryAgain, { passive: true });
+  }
+
+  function createYTPlayer(){
+    if(ytPlayer || !window.YT || !window.YT.Player) return;
+    const el = document.getElementById('yt-player');
+    if(!el) return;
+    ytPlayer = new window.YT.Player('yt-player', {
+      width: '200',
+      height: '113',
+      videoId: CFG.youtubeVideoId,
+      playerVars: {
+        autoplay: 0,
+        controls: 0,
+        disablekb: 1,
+        fs: 0,
+        loop: 1,
+        modestbranding: 1,
+        playsinline: 1,
+        playlist: CFG.youtubeVideoId,
+        rel: 0,
+        start: 0
+      },
+      events: {
+        onReady: () => {
+          ytReady = true;
+          if((pendingPlay || opened) && !userMuted){
+            playYouTubeFromStart();
+          } else {
+            try {
+              prebuffering = true;
+              ytPlayer.mute();
+              ytPlayer.playVideo();
+            } catch(e) {
+              prebuffering = false;
+            }
+          }
+        },
+        onStateChange: (e) => {
+          if(!window.YT || !window.YT.PlayerState) return;
+          if(e.data === window.YT.PlayerState.PLAYING){
+            if(prebuffering && !opened){
+              prebuffering = false;
+              prebufferedAtZero = true;
+              try {
+                ytPlayer.pauseVideo();
+                ytPlayer.seekTo(0, true);
+              } catch(err) {}
+              return;
+            }
+            updateDisc(true);
+          } else if(e.data === window.YT.PlayerState.PAUSED || e.data === window.YT.PlayerState.ENDED){
+            if(!prebuffering){
+              updateDisc(false);
+            }
+          }
+        }
+      }
+    });
+  }
+
+  const prevYTReady = window.onYouTubeIframeAPIReady;
+  window.onYouTubeIframeAPIReady = () => {
+    if(typeof prevYTReady === 'function') prevYTReady();
+    createYTPlayer();
+  };
+
+  if(window.YT && window.YT.Player){
+    createYTPlayer();
+  } else if(!document.querySelector('script[src*="youtube.com/iframe_api"]')){
+    const ytScript = document.createElement('script');
+    ytScript.src = 'https://www.youtube.com/iframe_api';
+    ytScript.async = true;
+    document.body.appendChild(ytScript);
+  }
+
+  // Resume playback if browser paused the iframe while switching tabs
+  document.addEventListener('visibilitychange', () => {
+    if(!document.hidden){
+      resumeYouTube();
+    }
+  });
+  window.addEventListener('focus', resumeYouTube);
+  window.addEventListener('pageshow', resumeYouTube);
+
+  if(musicBtn){
+    musicBtn.addEventListener('click', (e) => {
+      if(!opened){
+        openInvitation();
+        return;
+      }
+      e.stopPropagation();
+      if(!ytPlayer || !ytReady) return;
+      try {
+        if(isPlaying && !userMuted){
+          userMuted = true;
+          ytPlayer.mute();
+          ytPlayer.pauseVideo();
+          updateDisc(false);
+        } else {
+          userMuted = false;
+          ytPlayer.unMute();
+          ytPlayer.setVolume(70);
+          ytPlayer.playVideo();
+          updateDisc(true);
+        }
+      } catch(err) {}
+    });
+  }
+
+  /* ---------------- floating petals ---------------- */
+  const petalLayer = document.getElementById('petal-layer');
+  function makePetal(){
+    if(!petalLayer) return;
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    p.setAttribute('viewBox','0 0 20 20');
+    p.setAttribute('class','petal');
+    p.innerHTML = '<path d="M10 1C13 5 19 7 19 12C19 16 15 19 10 19C5 19 1 16 1 12C1 7 7 5 10 1Z" fill="' + (Math.random() > 0.5 ? '#D4AF37' : '#B76E79') + '" opacity="0.45"/>';
+    const size = 8 + Math.random()*14;
+    p.style.width = size+'px';
+    p.style.height = size+'px';
+    p.style.left = Math.random()*100+'%';
+    petalLayer.appendChild(p);
+    const duration = 12 + Math.random()*10;
+    const drift = (Math.random()-0.5)*160;
+    if(window.gsap){
+      gsap.fromTo(p, { y: -40, rotate: 0, opacity:.55 }, {
+        y: window.innerHeight + 60,
+        x: '+=' + drift,
+        rotate: 360*(Math.random() > 0.5 ? 1 : -1),
+        opacity: 0,
+        duration: duration,
+        ease: 'none',
+        onComplete: () => p.remove()
+      });
+    } else { p.remove(); }
+  }
+  let petalInterval = null;
+
+  /* ---------------- opening -> main reveal ---------------- */
+  const opening = document.getElementById('opening');
+  const openingVideo = document.getElementById('opening-video');
+  const tapHint = document.getElementById('tap-hint');
+
+  function onTouchEnd(e){
+    e.preventDefault();
+    openInvitation();
+  }
+
+  function openInvitation(){
+    if(opened) return;
+    opened = true;
+
+    tapHint && tapHint.classList.add('hidden');
+    document.removeEventListener('click', openInvitation);
+    document.removeEventListener('touchend', onTouchEnd);
+
+    playYouTubeFromStart();
+    musicBtn && musicBtn.classList.add('visible');
+
+    setTimeout(() => {
+      if(!isPlaying && !userMuted){
+        musicBtn && musicBtn.classList.add('needs-tap');
+        attachAutoRetry();
+      }
+    }, 2200);
+
+    if(!openingVideo){
+      completeOpening();
+      return;
+    }
+
+    openingVideo.muted = true;
+    openingVideo.volume = 0;
+
+    let started = false;
+    const fallbackTimer = setTimeout(() => {
+      if(!started) completeOpening();
+    }, 4000);
+
+    openingVideo.addEventListener('playing', function onPlaying(){
+      started = true;
+      clearTimeout(fallbackTimer);
+      openingVideo.removeEventListener('playing', onPlaying);
+    });
+
+    openingVideo.play().catch(() => {
+      openingVideo.load();
+      openingVideo.play().catch(() => {
+        clearTimeout(fallbackTimer);
+        completeOpening();
+      });
+    });
+  }
+
+  if(opening){
+    document.addEventListener('click', openInvitation);
+    document.addEventListener('touchend', onTouchEnd, { passive: false });
+    openingVideo && openingVideo.addEventListener('ended', completeOpening);
+  } else {
+    initSiteAnimations();
+  }
+
+  function completeOpening(){
+    if(openingVideo){
+      openingVideo.muted = true;
+      openingVideo.volume = 0;
+    }
+
+    if(window.gsap && opening){
+      gsap.to(opening, {
+        opacity: 0,
+        duration: 0.9,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          opening.style.display = 'none';
+          initSiteAnimations();
+          musicBtn && musicBtn.classList.add('visible');
+          if(!petalInterval){
+            petalInterval = setInterval(makePetal, 900);
+            for(let i = 0; i < 4; i++) setTimeout(makePetal, i * 250);
+          }
+        }
+      });
+    } else {
+      if(opening) opening.style.display = 'none';
+      initSiteAnimations();
+    }
+  }
+
+  /* ---------------- scroll animations (post-open) ---------------- */
+  let siteInited = false;
+  function initSiteAnimations(){
+    if(siteInited) return;
+    siteInited = true;
+
+    if(window.Lenis){
+      const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+      function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+      if(window.gsap && window.ScrollTrigger){
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+      }
+    }
+
+    if(!window.gsap || !window.ScrollTrigger) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.from('#hero [data-fade]', {
+      opacity: 0,
+      y: 26,
+      duration: 0.95,
+      stagger: 0.12,
+      ease: 'power3.out',
+      clearProps: 'transform,opacity'
+    });
+
+    document.querySelectorAll('.section [data-fade], .detail-card, .rsvp-wrap').forEach(el => {
+      gsap.from(el, {
+        opacity: 0,
+        y: 30,
+        duration: 0.85,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
+        scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+      });
+    });
+  }
+})();
+`,
+  },
+];
